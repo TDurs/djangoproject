@@ -69,7 +69,7 @@ class EstadoDeLectura(models.Model):
 
 
 class ReseñaLibro(models.Model):
-    estado_lectura = models.ForeignKey(EstadoDeLectura, on_delete=models.CASCADE)
+    estado_lectura = models.ForeignKey(AlmacenLibros, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Project, on_delete=models.CASCADE)
     texto_reseña = models.TextField()
     fecha_reseña = models.DateTimeField(auto_now_add=True)
@@ -79,7 +79,7 @@ class ReseñaLibro(models.Model):
     )
 
     def __str__(self):
-        return f"{self.estado_lectura.title.titulo} - {self.usuario.name} ({self.calificacion}/5)"
+        return f"{self.estado_lectura} - {self.usuario.name} ({self.calificacion}/5)"
 
 
 
