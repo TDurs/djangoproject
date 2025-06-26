@@ -1,0 +1,100 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Libros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        li h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        li h3 {
+            margin: 5px 0;
+            font-weight: normal;
+            color: #666;
+        }
+
+        li p {
+            margin: 3px 0;
+            color: #333
+        }
+    </style>
+</head>
+
+
+<body>
+<h1>Libros almacenados</h1>
+
+
+
+
+<input type="text" id="buscador" placeholder="Buscar por título o autor..." onkeyup="filtrarLibros()">
+
+<ul id="lista-libros">
+    {% for libro in libros %}
+        <li>
+            <h1>{{ libro.titulo }}</h1>
+            <h1>{{ libro.autor }}</h1>
+            <p>{{ libro.año }}</p>
+            <p>{{ libro.critica_de_internet }}</p>
+            <p>{{ libro.genero }}</p>
+            <p>{{ libro.clasificacion }}</p>
+
+        </li>
+    {% endfor %}
+</ul>
+
+    <script>
+        function filtrarLibros() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            const libros = document.querySelectorAll('#lista-libros li');
+
+            libros.forEach(libro => {
+                const texto = libro.textContent.toLowerCase();
+                libro.style.display = texto.includes(filtro) ? '' : 'none';
+            });
+        }
+    </script>
+
+</body>
+
+</html>
+{% endblock %}

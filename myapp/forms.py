@@ -1,5 +1,7 @@
 from django import forms
 from .models import EstadoDeLectura, ReseñaLibro, Project, AlmacenLibros
+from django.contrib.auth.models import User
+from django.forms import ModelForm
 
 class CreateNewTask(forms.Form):
     estado_lectura = forms.ModelChoiceField(
@@ -7,11 +9,7 @@ class CreateNewTask(forms.Form):
         label="Estado de Lectura"
     )
 
-    usuario = forms.ModelChoiceField(
-        queryset=Project.objects.all(),
-        label="Usuario"
-    )
-
+    
     texto_reseña = forms.CharField(
         label="Reseña", 
         widget=forms.Textarea,
@@ -23,3 +21,9 @@ class CreateNewTask(forms.Form):
         choices=[(str(i), str(i)) for i in range(1, 6)],  # Las opciones deben ser strings si esperas texto en POST
         required=True
     )
+
+class AgregarLibro(ModelForm):
+    
+    class Meta:
+        model = AlmacenLibros
+        fields = ['titulo','autor','genero','año','clasificacion','critica_de_internet']

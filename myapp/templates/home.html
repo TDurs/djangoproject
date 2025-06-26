@@ -1,1 +1,233 @@
-<h1>Home</h1>
+
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatibl" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven</title>
+    <link rel="stylesheet" href="{% static '/masa.css' %}">
+</head> 
+<body>
+    
+    <header class="header" >
+
+        <div class="menu container">
+            <a href="#" class="logo">Logo</a>
+            <input type="checkbox" id="menu" />
+            <label for="menu">
+                <img src="imagenes/fondocc.jpg" class="menu-icono" alt="">
+            </label> 
+            <nav class="navbar">
+                <ul>
+                    <li><a href="">Inicio</a></li>
+                    <li><a href="/signup">Registrarse</a></li>
+                    <li><a href="/signin">Iniciar Sesión</a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="header-content container">
+            <h1>MY BOOK HAVEN</h1>
+            <p>
+                Aquí encontrarás un espacio dedicado a tu  pasión por los libros, 
+                donde cada historia tiene un lugar especial. 
+                Esta librería personal reúne títulos que te han acompañado, inspirado y transformado, 
+                y quiero compartir contigo la magia que encierran sus páginas.
+                Explora, descubre nuevas aventuras y déjate llevar por el poder de las palabras. 
+                ¡Que cada visita sea el inicio de un nuevo viaje!
+            </p>
+            <a href="#" class="btn-1">Informacion</a>
+        </div>
+    </header>
+
+    {% block content %}
+    
+
+    <section class="book">
+
+        <img clas="book-img" src="imagenes/flores1.PNG" alt="">
+
+        <div class="book-content container">
+
+            <h2>Explora nuestras colecciones</h2>
+            <P CLASS="txt-p">
+                Sumérgete en un mundo de historias, conocimientos y aventuras. 
+                Descubre los géneros literarios que han marcado épocas y 
+                encuentra tu próxima lectura favorita."
+            </P>
+
+            <div class="book-group">
+
+                <div class="book-1">
+                    <img src="imagenes/dibujo1.jpg" alt="">
+                    <h3>Novelas de Ficcion</h3>
+                    <p>
+                        Historias que despiertan la imaginación, nos transportan a mundos nuevos 
+                        y nos permiten vivir mil vidas en una sola.
+                    </p>
+                </div>
+
+                <div class="book-1">
+                    <img src="imagenes/dibujo2.jpg" alt="">
+                    <h3>Ciencia y conocimiento</h3>
+                    <p>
+                        Libros que abren la mente, explican el universo 
+                        y nos invitan a descubrir el fascinante mundo que nos rodea.
+                    </p>
+                </div>
+                <div class="book-1">
+                    <img src="imagenes/dibujo3.jpg" alt="">
+                    <h3>Poesia y ensayo</h3>
+                    <p>
+                        Palabras que tocan el alma 
+                        y reflexiones que nos invitan a mirar la vida desde nuevas perspectivas.
+                    </p>
+                </div>
+
+            </div>
+            <a href="#" class="btn-1">Informacion</a>
+        </div>
+    </section>
+
+
+    <main class="services">
+        
+        <div class="services-content container">
+            <h2>Library services</h2>
+
+            <div class="services-group">
+
+                <div class="services-1">
+                    <img src="imagenes/i1.svg" alt="">
+                    <h3>Servicio 1</h3>
+                </div>
+                <div class="services-1">
+                    <img src="imagenes/i2.svg" alt="">
+                    <h3>Servicio 2</h3>
+                </div>
+                <div class="services-1">
+                    <img src="imagenes/i3.svg" alt="">
+                    <h3>Servicio 3</h3>
+                </div>
+
+            </div>
+            <p>
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+            <a href="#" class="btn-1">Informacion</a>
+        </div>
+    </main>
+
+
+    <section class="general">
+        <div class="general-1">
+            <h2>totam similique</h2>
+            <p>
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+            <a href="#" class="btn-1">Informacion</a>
+        </div>
+        <div class="general-2"></div>
+    </section>
+
+
+    <section class="general">
+        <div class="general-3"></div>
+        <div class="general-1">
+            <h2>totam similique</h2>
+            <p>
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+            <a href="#" class="btn-1">Informacion</a>
+        </div>
+    </section>
+
+    <section class="blog container">
+
+        <h2>Blog</h2>
+        <p>axxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+    
+        <div class="blog-content">
+
+            <div class="blog1">
+                <img src="imagenes/blog1.PNG" alt="">
+                <h3>Blog 1</h3>
+                <p>
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                </p>
+            </div>
+            <div class="blog1">
+                <img src="imagenes/blog1.PNG" alt="">
+                <h3>Blog 1</h3>
+                <p>
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                </p>
+            </div>
+            <div class="blog1">
+                <img src="imagenes/blog1.PNG" alt="">
+                <h3>Blog 1</h3>
+                <p>
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+                </p>
+            </div>
+        </div>
+        <a href="#" class="btn-1">Informacion</a>
+    
+    </section>
+    {% endblock  %}
+
+    <footer class="footer">
+        <div class="footer-content container">
+            <div class="link">
+
+                <h3>lorem</h3>
+                <ul>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+            <div class="link">
+                <h3>lorem</h3>
+                <ul>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+            <div class="link">
+                <h3>lorem</h3>
+                <ul>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+</html>
+
+</footer>

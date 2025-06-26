@@ -2,18 +2,21 @@ from django.http import HttpResponse, JsonResponse
 from .models import Project, Task, ReseñaLibro, EstadoDeLectura, AlmacenLibros
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
-from .forms import CreateNewTask 
-from django.contrib.auth.forms import UserCreationForm
+from .forms import CreateNewTask, AgregarLibro
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 
 
 
 # Create your views here.
 
-def index(request):
-    return render(request, 'index.html')
+def libros_view(request):
+    libros = AlmacenLibros.objects.all()
+    return render(request, 'libros.html', {
+        'libros': libros
+    })
 
 def hello(request, username):
     return HttpResponse("Hello world %s " % username)
@@ -49,11 +52,11 @@ def create_creacion(request):
         if form.is_valid():
             reseña = ReseñaLibro.objects.create(
                 estado_lectura=form.cleaned_data['estado_lectura'],
-                usuario=form.cleaned_data['usuario'],
+                user= request.user,
                 texto_reseña=form.cleaned_data['texto_reseña'],
                 calificacion=int(form.cleaned_data['calificacion']),
                 )
-            return redirect('/task/')
+            return redirect('/libro/')
         else:
             return render(request, 'create_creacion.html', {'form': form})
         
@@ -88,3 +91,42 @@ def signup(request):
                     "error":'Password no coinciden'
                 }) 
     
+def signout(request):
+    logout(request)
+    return redirect('home')
+
+def signin(request):
+    if request.method == 'GET':
+        return render(request, 'signin.html',{
+            'form': AuthenticationForm
+        })
+    else:
+        user = authenticate(
+            request, username=request.POST['username'], password=request.POST
+            ['password'])
+        if user is None:
+            return render(request,'signin.html',{
+                'form':AuthenticationForm,
+                'error':'Username or password esta incorrecto'
+            })
+        else:
+            login(request,user)
+            return redirect('index')
+             
+
+def agregrar_libros(request):
+    if request.method == 'GET':
+        return render (request, 'agregar_libros.html',{
+            'form': AgregarLibro
+        })
+    else:
+        try:
+            form=AgregarLibro(request.POST)
+            agregar=form.save(commit=False)
+            agregar.save()
+            return redirect('book')
+        except ValueError:
+            return render (request, 'agregar_libros.html',{
+            'form': AgregarLibro,
+            'error': 'Proporcionar datos válido'
+        })

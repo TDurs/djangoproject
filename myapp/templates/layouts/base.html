@@ -1,40 +1,55 @@
+{% load static %}
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-
-<nav>
-    <ul>
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            <a href="/project">Project</a>
-        </li>
-        <li>
-            <a href="/about">About</a>
-        </li>
-        <li>
-            <a href="/task">Task</a>
-        </li>
-        <li>
-            <a href="/create_creacion">Reseña</a>
-        </li>
-    </ul>
-</nav>
-
-
+<html lang='en'>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>BuscoDormir</title>
+        <title>BookHaven</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="{% static 'stylo.css' %}">
     </head>
     <body>
+        
+        <nav class="navbar">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/project">Project</a>
+                </li>
+                <li>
+                    <a href="/about">About</a>
+                </li>
+                <li>
+                    <a href="/task">Task</a>
+                </li>
+                <li>
+                    <a href="/libros">Libros</a>
+                </li>
+                <li>
+                    <a href="/libros/resena/">Reseña</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="/logout">Logout</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="/signup">Signup</a>
+                </li>
+                <li>
+                    <a href="/signin">Signin</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
         {% block content %}
         {% endblock  %}
         
