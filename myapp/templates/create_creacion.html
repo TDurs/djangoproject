@@ -7,6 +7,7 @@
 
 <form method = "POST">
     {% csrf_token %}
+    <h2>Escribir reseña para: "{{ libro.titulo }}"</h2>
     {{form.as_p}}
     <button>
         Publicar

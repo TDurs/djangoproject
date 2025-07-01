@@ -1,0 +1,149 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reseñas de {{ libro.titulo }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 30px;
+        }
+        
+
+        .contenedor {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .resena {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .usuario {
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        .fecha {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .calificacion {
+            font-size: 1.1em;
+            margin: 5px 0;
+            color: #777;
+        }
+
+        .texto {
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .paginacion {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .paginacion a, .paginacion span {
+            margin: 0 5px;
+            padding: 8px 12px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .paginacion .current {
+            background: #0056b3;
+            font-weight: bold;
+        }
+
+        .paginacion .disabled {
+            background: #ccc;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Reseñas para el libro: "{{ libro.titulo }}"</h1>
+        <a href="{% url 'crear_resena' libro.id %}" class="boton-resena">➕ Agregar Reseña</a>
+        
+        <form method="get" style="margin-bottom: 20px;">
+            <label for="filtro">Ordenar reseñas por:</label>
+            <select name="filtro" id="filtro" onchange="this.form.submit()">
+                <option value="recientes" {% if filtro == 'recientes' %}selected{% endif %}>🕓 Más recientes</option>
+                <option value="antiguos" {% if filtro == 'antiguos' %}selected{% endif %}>📜 Más antiguos</option>
+                <option value="mejor_calificados" {% if filtro == 'mejor_calificados' %}selected{% endif %}>⭐ Mejor calificados</option>
+                {% if request.user.is_authenticated %}
+                    <option value="mios" {% if filtro == 'mios' %}selected{% endif %}>👤 Mis reseñas</option>
+                {% endif %}
+            </select>
+        </form>
+        
+        {% for resena in resena %}
+        
+            <div class="resena">
+                <p class="usuario">{{ resena.user.username }}</p>
+                <p class="fecha">{{ resena.fecha_reseña|date:"d M Y - H:i" }}</p>
+                <p class="calificacion">⭐ Calificación: {{ resena.calificacion }}/5</p>
+                <p class="texto">{{ resena.texto_reseña }}</p>
+                {% if resena.user == request.user %}
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <form action="{% url 'eliminar_reseña' resena.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" style="background: red; color: white; border: none; padding: 5px 10px; border-radius: 5px;">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+
+                        <a href="{% url 'editar_reseña' resena.id %}">
+                            <button style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px;">
+                                ✏️ Editar
+                            </button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+        {% empty %}
+            <p>No hay reseñas aún para este libro.</p>
+        {% endfor %}
+
+        <!-- Paginación -->
+        <div class="paginacion">
+            {% if resena.has_previous %}
+                <a href="?page={{ resena.previous_page_number }}">Anterior</a>
+            {% else %}
+                <span class="disabled">Anterior</span>
+            {% endif %}
+
+            <span class="current">Página {{ resena.number }} de {{ resena.paginator.num_pages }}</span>
+
+            {% if resena.has_next %}
+                <a href="?page={{ resena.next_page_number }}">Siguiente</a>
+            {% else %}
+                <span class="disabled">Siguiente</span>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

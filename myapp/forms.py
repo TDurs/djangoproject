@@ -4,10 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 class CreateNewTask(forms.Form):
-    estado_lectura = forms.ModelChoiceField(
-        queryset=AlmacenLibros.objects.all(),
-        label="Estado de Lectura"
-    )
+
 
     
     texto_reseña = forms.CharField(

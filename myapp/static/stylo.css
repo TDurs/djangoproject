@@ -5,7 +5,7 @@ body {
 }
 
 .navbar {
-    background: #C0C0C0;
+    background: #404040;
     padding: 5px 10px;
 
 }
@@ -13,9 +13,14 @@ body {
 .navbar ul {
     display: flex;
     justify-content: space-between;
+
 }
 
-.navbar ul li a{
-    color: white;
+.navbar ul li {
+    list-style: none;
+}
+
+.navbar ul li a:hover{
+    color: aqua;
 
 }

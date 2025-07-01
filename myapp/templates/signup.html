@@ -1,19 +1,89 @@
-{% extends 'layouts/base.html'%}
-
+{% extends 'layouts/base.html' %}
 
 {% block content %}
 
-<h1>signup</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background:rgb(255, 255, 255);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
 
-<form action="/signup/" method="POST">
-    {% csrf_token %}
-    
-    {{error}}
-    {{form.as_p}}
-        
-    <button>
-        signup
-    </button>
-</form>
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-{% endblock  %}
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            color: #333;
+
+        }
+
+        form p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>Crear cuenta</h1>
+
+    {% if error %}
+        <div class="error-message">{{ error }}</div>
+    {% endif %}
+
+    <form action="/signup/" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Registrarse</button>
+    </form>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

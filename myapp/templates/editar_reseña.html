@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<h2>Editando reseña de: "{{ reseña.estado_lectura.titulo }}"</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar cambios</button>
+</form>
+
+<a href="{% url 'resena_detallada' reseña.estado_lectura.id %}">Cancelar</a>
+
+{% endblock %}

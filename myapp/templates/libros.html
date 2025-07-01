@@ -64,20 +64,29 @@
 <h1>Libros almacenados</h1>
 
 
-
+<a href="{% url 'agregrar_libros' %}">
+    <button style="padding: 10px 20px; margin-bottom: 20px; font-size: 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Agregar nuevo libro
+    </button>
+</a>
 
 <input type="text" id="buscador" placeholder="Buscar por título o autor..." onkeyup="filtrarLibros()">
 
 <ul id="lista-libros">
     {% for libro in libros %}
         <li>
-            <h1>{{ libro.titulo }}</h1>
-            <h1>{{ libro.autor }}</h1>
-            <p>{{ libro.año }}</p>
-            <p>{{ libro.critica_de_internet }}</p>
-            <p>{{ libro.genero }}</p>
-            <p>{{ libro.clasificacion }}</p>
-
+            {% if libro.id %}
+                <a href="{% url 'resena_detallada' libro.id %}"><h1>{{ libro.titulo }}</h1></a>
+            {% else %}
+                <span>Reseña no disponible</span>
+            {% endif %}
+            
+            
+            <h1>Autor: {{ libro.autor }}</h1>
+            <p>Año: {{ libro.año }}</p>
+            <p>Puntaje de internet: {{ libro.critica_de_internet }}</p>
+            <p>Genero: {{ libro.genero }}</p>
+            <p>Clasificación: {{ libro.clasificacion }}</p>
         </li>
     {% endfor %}
 </ul>
