@@ -44,7 +44,10 @@
             font-size: 0.9em;
             color: #777;
         }
-
+        .etiqueta-negra {
+            color: #777;
+            
+        }
         .calificacion {
             font-size: 1.1em;
             margin: 5px 0;
@@ -87,7 +90,7 @@
         <a href="{% url 'crear_resena' libro.id %}" class="boton-resena">➕ Agregar Reseña</a>
         
         <form method="get" style="margin-bottom: 20px;">
-            <label for="filtro">Ordenar reseñas por:</label>
+            <label for="filtro" class="etiqueta-negra">Ordenar reseñas por:</label>
             <select name="filtro" id="filtro" onchange="this.form.submit()">
                 <option value="recientes" {% if filtro == 'recientes' %}selected{% endif %}>🕓 Más recientes</option>
                 <option value="antiguos" {% if filtro == 'antiguos' %}selected{% endif %}>📜 Más antiguos</option>

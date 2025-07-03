@@ -24,3 +24,7 @@ class AgregarLibro(ModelForm):
     class Meta:
         model = AlmacenLibros
         fields = ['titulo','autor','genero','año','clasificacion','critica_de_internet']
+
+class UsuarioEstado(ModelForm):
+    model = EstadoDeLectura
+    fields = ['title','ESTADO_CHOICES','estado']

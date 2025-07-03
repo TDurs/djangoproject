@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destino' | Librería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; 
+            text-decoration: none;
+            list-style: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f1c4d, #8a1a1a, #0f1c4d);
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1453&q=80');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            position: relative;
+            min-height: 100vh;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 40px;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(197, 126, 49, 0.3);
+        }
+
+        .logo {
+            color: #FFFFFF;
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 0 0 15px rgba(197, 126, 49, 0.9);
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #c57e31;
+        }
+
+        .menu .navbar ul li {
+            position: relative;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .menu .navbar ul li a {
+            font-size: 18px;
+            padding: 15px 25px;
+            color: #FFFFFF;
+            display: block; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+            border-radius: 30px;
+        } 
+
+        .menu .navbar ul li a:hover { 
+            color: #c57e31;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .icons { 
+            display: flex;
+        }
+
+        .icons i {
+            font-size: 22px;
+            color: #FFFFFF;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icons i:hover {
+            color: #c57e31;
+            transform: translateY(-3px);
+        }
+
+        #menu {
+            display: none;
+        }
+
+        .menu-icono {
+            width: 30px;
+            filter: invert(1);
+        }
+
+        .menu label {
+            cursor: pointer;
+            display: none;
+        }
+
+        .header-content {
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-txt {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-txt h1 { 
+            font-size: 5rem;
+            line-height: 1.1;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #c57e31;
+            margin-bottom: 25px;
+            font-family: 'Roboto Condensed', sans-serif;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: 2px;
+        }
+
+        .header-txt p {
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 800px;
+            line-height: 1.8;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-1 {
+            display: inline-block;
+            padding: 18px 40px;
+            border-radius: 35px;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background: linear-gradient(45deg, #ba6e1d, #e0a14e);
+            box-shadow: 0 12px 25px rgba(186, 110, 29, 0.5);
+            font-family: 'Roboto Condensed', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-1:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-1:hover:before {
+            left: 100%;
+        }
+
+        .btn-1:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(186, 110, 29, 0.7);
+        }
+
+        .images {
+            width: 95%;
+            max-width: 1200px;
+            height: 550px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+            border: 1px solid rgba(197, 126, 49, 0.2);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+
+        .swiper-slide:hover {
+            transform: scale(1.02);
+        }
+
+        .swiper-slide h3 {
+            position: absolute;
+            left: 30px;
+            bottom: 30px;
+            color: #FFFFFF;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            z-index: 2;
+            background: rgba(197, 126, 49, 0.85);
+            padding: 12px 30px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .swiper-slide:hover img {
+            transform: scale(1.1);
+        }
+
+        .swiper-slide::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            z-index: 1;
+        }
+
+        .swiper-button-prev,
+        .swiper-button-next {
+            height: 60px;
+            width: 60px;
+            border: 2px solid #FFFFFF;
+            border-radius: 50%; 
+            font-size: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            z-index: 10;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.4s ease;
+        }
+
+        .swiper-button-prev:hover,
+        .swiper-button-next:hover {
+            background: rgba(197, 126, 49, 0.9);
+            border-color: #c57e31;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .swiper-button-prev::after,
+        .swiper-button-next::after {
+            font-size: 30px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        .swiper-button-prev {
+            left: 25px;
+        }
+
+        .swiper-button-next {
+            right: 25px;
+        }
+
+        .genre-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            max-width: 800px;
+            margin: 30px auto 0;
+        }
+
+        .genre-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 25px;
+            border-radius: 40px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(197, 126, 49, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .genre-tag:hover {
+            background: #c57e31;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(186, 110, 29, 0.4);
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.85);
+            text-align: center;
+            padding: 30px;
+            font-size: 16px;
+            color: #aaa;
+            border-top: 1px solid rgba(197, 126, 49, 0.2);
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .footer-social {
+            margin: 20px 0;
+        }
+
+        .footer-social a {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 24px;
+            color: #c57e31;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            transform: translateY(-5px);
+            color: #e0a14e;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 1200px) {
+            .header-txt h1 {
+                font-size: 4rem;
+            }
+            
+            .images {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .menu {
+                padding: 20px;
+            }
+
+            .menu label {
+                display: initial;
+            }
+
+            .menu .navbar {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: rgba(44, 44, 44, 0.95);
+                backdrop-filter: blur(5px);
+                display: none;
+                padding: 20px;
+                border-radius: 0 0 20px 20px;
+            }
+
+            .menu .navbar ul li {
+                width: 100%;
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            #menu:checked ~ .navbar {
+                display: block;
+            }
+
+            .icons {
+                display: none;
+            }
+
+            .header {
+                padding: 100px 20px 50px;
+                text-align: center;
+            }
+
+            .header-txt {
+                text-align: center;
+                width: 100%;
+                margin-bottom: 40px;
+            }
+
+            .header-txt h1 {
+                font-size: 3rem;
+                line-height: 1.2;
+            }
+
+            .header-txt p {
+                font-size: 1.1rem;
+                margin: 0 auto 30px;
+            }
+
+            .images {
+                position: relative;
+                width: 100%;
+                height: 400px;
+                padding: 0;
+                margin-top: 30px;
+            }
+            
+            .swiper-slide h3 {
+                font-size: 2.2rem;
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-txt h1 {
+                font-size: 2.5rem;
+            }
+            
+            .swiper-slide h3 {
+                font-size: 1.8rem;
+                padding: 10px 20px;
+            }
+            
+            .menu .navbar ul li a {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .btn-1 {
+                padding: 15px 35px;
+                font-size: 16px;
+            }
+            
+            .images {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-txt h1 {
+                font-size: 2rem;
+            }
+            
+            .header-txt p {
+                font-size: 1rem;
+            }
+            
+            .swiper-slide h3 {
+                font-size: 1.4rem;
+                left: 15px;
+                bottom: 15px;
+                padding: 8px 15px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .images {
+                height: 300px;
+            }
+            
+            .genre-tag {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .swiper-button-prev,
+            .swiper-button-next {
+                height: 45px;
+                width: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="menu container">
+            <a href="#" class="logo">Destino<span>'</span></a>
+            <input type="checkbox" id="menu"/>
+            <label for="menu">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMyAxMmgxOE0zIDZoMThNMyAxOGgxOCIvPjwvc3ZnPg==" class="menu-icono" alt="Menú">
+            </label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Login</a></li>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="#">Libros</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="icons">
+                <i class="fa-brands fa-facebook"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+        </div>
+
+        <div class="header-content container">
+            <div class="header-txt">
+                <h1>Elige tu libro favorito</h1>
+                <p>
+                    Sumérgete en mundos fascinantes con nuestra colección de libros cuidadosamente seleccionados. Desde emocionantes aventuras hasta historias de amor inolvidables, tenemos el libro perfecto para cada lector.
+                </p>
+                <a href="#" class="btn-1">Explorar Colección</a>
+                
+                <div class="genre-tags">
+                    <span class="genre-tag">Romance</span>
+                    <span class="genre-tag">Ficción</span>
+                    <span class="genre-tag">Terror</span>
+                    <span class="genre-tag">Misterio</span>
+                    <span class="genre-tag">Fantasía</span>
+                    <span class="genre-tag">Ciencia Ficción</span>
+                    <span class="genre-tag">Histórica</span>
+                    <span class="genre-tag">Juvenil</span>
+                    <span class="genre-tag">Infantil</span>
+                    <span class="genre-tag">Biografía</span>
+                </div>
+            </div>
+
+            <div class="images">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Libro de Romance">
+                            <h3>Romance</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=898&q=80" alt="Libro de Ficción">
+                            <h3>Ficción</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80" alt="Libro de Terror">
+                            <h3>Terror</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1776&q=80" alt="Libro de Anime">
+                            <h3>Anime</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1495640388908-05fa85288e61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Libro de Novelas">
+                            <h3>Novelas</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1531346798142-4e61d9a8e9e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Libro de Ciencia Ficción">
+                            <h3>Ciencia Ficción</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1584824486539-53bb4646bdbc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Libro Histórico">
+                            <h3>Histórica</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1512138664757-360e0aad5132?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80" alt="Libro Juvenil">
+                            <h3>Juvenil</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1593351415075-3bac0f615d4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Libro Infantil">
+                            <h3>Infantil</h3>
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1776&q=80" alt="Libro de Biografía">
+                            <h3>Biografía</h3>
+                        </div>
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="footer">
+        <div class="footer-social">
+            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+        </div>
+        <p>&copy; 2023 Destino' Librería. Todos los derechos reservados.</p>
+        <p>Sumérgete en historias que transforman vidas</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Inicialización del Swiper con autoplay
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            loop: true,
+            spaceBetween: 30,
+            grabCursor: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            effect: "coverflow",
+            coverflowEffect: {
+                rotate: 5,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2.2,
+                    centeredSlides: true
+                },
+                992: {
+                    slidesPerView: 2.8,
+                    centeredSlides: true
+                },
+                1200: {
+                    slidesPerView: 3.5,
+                    centeredSlides: true
+                }
+            }
+        });
+    </script>
+</body>
+</html>

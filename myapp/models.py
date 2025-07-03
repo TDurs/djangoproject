@@ -88,6 +88,18 @@ class ReseñaLibro(models.Model):
 
 
 
+class LibroFavorito(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    libro = models.ForeignKey(AlmacenLibros, on_delete=models.CASCADE)
+    agregado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'libro')  # Evita duplicados
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.libro.titulo}"
+
+
 
 
 

@@ -1,0 +1,92 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div style="padding: 20px; background-color: #f9f9f9;">
+    <h1 style="color: #333; font-size: 28px; margin-bottom: 20px;">⭐ Mis Libros Favoritos</h1>
+
+    <a href="{% url 'libros_view' %}">
+        <button style="
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            cursor: pointer;">
+            ⬅ Volver al listado
+        </button>
+    </a>
+
+    <!-- CSRF token oculto (para fetch) -->
+    <form style="display: none;">{% csrf_token %}</form>
+
+    {% if libros %}
+        <div style="display: grid; gap: 20px;">
+            {% for libro in libros %}
+                <div style="
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    position: relative;
+                    transition: transform 0.2s ease;">
+                    
+                    <h2 style="margin: 0 0 10px; font-size: 22px; color: #000;">{{ libro.titulo }}</h2>
+                    <p style="color: #000;"><strong>Autor:</strong> {{ libro.autor }}</p>
+                    <p style="color: #000;"><strong>Año:</strong> {{ libro.año }}</p>
+                    <p style="color: #000;"><strong>Género:</strong> {{ libro.genero }}</p>
+                    <p style="color: #000;"><strong>Clasificación:</strong> {{ libro.clasificacion }}</p>
+                    <p style="color: #000;"><strong>Crítica:</strong> {{ libro.critica_de_internet }}</p>
+
+                    <!-- Botón para quitar de favoritos con AJAX -->
+                    <button class="quitar-favorito-btn"
+                            data-libro-id="{{ libro.id }}"
+                            style="
+                                position: absolute; top: 20px; right: 20px;
+                                background-color: #dc3545;
+                                color: white;
+                                border: none;
+                                padding: 6px 12px;
+                                border-radius: 5px;
+                                cursor: pointer;">
+                        ❌ Quitar favorito
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="font-size: 18px; color: #555;">No tienes libros favoritos aún.</p>
+    {% endif %}
+</div>
+
+<!-- Script AJAX para eliminar favoritos sin recargar -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const botones = document.querySelectorAll('.quitar-favorito-btn');
+
+    botones.forEach(boton => {
+        boton.addEventListener('click', function () {
+            const libroId = this.dataset.libroId;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const tarjetaLibro = this.closest('div');
+
+            fetch("{% url 'toggle_favorito' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken
+                },
+                body: `libro_id=${libroId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && !data.favorito) {
+                    tarjetaLibro.remove();  // Elimina la tarjeta visualmente
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
+{% endblock %}

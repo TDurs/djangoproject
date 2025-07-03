@@ -1,17 +1,79 @@
 {% extends 'layouts/base.html' %}
 
-
 {% block content %}
-<h1>Creater of calification</h1>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Reseña</title>
+    <style>
+        .reseña-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-<form method = "POST">
-    {% csrf_token %}
-    <h2>Escribir reseña para: "{{ libro.titulo }}"</h2>
-    {{form.as_p}}
-    <button>
-        Publicar
-    </button>
-</form>
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
 
-{% endblock  %}
+        form p {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul.errorlist {
+            color: black;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="reseña-container">
+    <h1>Publicar Reseña</h1>
+    <h2>Libro: "{{ libro.titulo }}"</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Publicar</button>
+    </form>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

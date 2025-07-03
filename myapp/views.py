@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from .models import Project, Task, ReseñaLibro, EstadoDeLectura, AlmacenLibros
+from .models import Project, Task, ReseñaLibro, EstadoDeLectura, AlmacenLibros, LibroFavorito
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from .forms import CreateNewTask, AgregarLibro
@@ -11,6 +11,11 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Q
+from django.contrib import messages
+from django.views.decorators.http import require_POST
+
+
+
 
 
 
@@ -18,29 +23,67 @@ from django.db.models import Q
 @login_required
 def libros_view(request):
     libros = AlmacenLibros.objects.all()
+    favoritos = []
+
+    if request.user.is_authenticated:
+        favoritos = LibroFavorito.objects.filter(usuario=request.user).values_list('libro_id', flat=True)
     return render(request, 'libros.html', {
-        'libros': libros
+        'libros': libros,
+        'favoritos': favoritos,
     })
 
-def hello(request, username):
-    return HttpResponse("Hello world %s " % username)
+@login_required
+def agregar_favorito(request, libro_id):
+    libro = get_object_or_404(AlmacenLibros, id=libro_id)
+    LibroFavorito.objects.get_or_create(usuario=request.user, libro=libro)
+    return redirect('libros_view')  # o la URL donde se muestra la lista
 
-def about(request):
-    return render(request, 'about.html')
 
-def project(request):   
-   # project = list(Project.objects.values())
-    projects = Project.objects.all()
-    return render(request, 'projects.html',{
-        'projects': projects
+
+@require_POST
+@login_required
+def toggle_favorito(request):
+    libro_id = request.POST.get('libro_id')  
+    libro = AlmacenLibros.objects.filter(id=libro_id).first()
+    if not libro:
+        return JsonResponse({'success': False, 'error': 'Libro no encontrado'}, status=404)
+
+    favorito, creado = LibroFavorito.objects.get_or_create(usuario=request.user, libro=libro)
+    if not creado:
+        favorito.delete()
+        return JsonResponse({'success': True, 'favorito': False})
+    return JsonResponse({'success': True, 'favorito': True})
+
+
+@login_required
+def libros_favoritos(request):
+    libros = AlmacenLibros.objects.filter(librofavorito__usuario=request.user)
+    estados = EstadoDeLectura.objects.filter(user=request.user)
+    estado_dict = {e.title.id: e.estado for e in estados}
+
+    return render(request, 'libros_favoritos.html', {
+        'libros': libros,
+        'estados_lectura': estado_dict,
+        'estado_choices': EstadoDeLectura.ESTADO_CHOICES,
     })
 
-def task(request):
-    #task = get_object_or_404(Task, title=title) 
-    task = Task.objects.all()
-    return render(request, 'tasks.html',{
-        'task': task
-    })
+@require_POST
+@login_required
+def cambiar_estado_lectura(request):
+    libro_id = request.POST.get('libro_id')
+    nuevo_estado = request.POST.get('estado')
+
+    libro = get_object_or_404(AlmacenLibros, id=libro_id)
+
+    if nuevo_estado not in dict(EstadoDeLectura.ESTADO_CHOICES).keys():
+        return JsonResponse({'success': False, 'error': 'Estado inválido'}, status=400)
+
+    estado_obj, creado = EstadoDeLectura.objects.get_or_create(user=request.user, title=libro)
+    estado_obj.estado = nuevo_estado
+    estado_obj.save()
+
+    return JsonResponse({'success': True, 'estado': nuevo_estado})
+
 
 @login_required
 def resena_detallada(request, reseñalibro_estado_lectura_id):
@@ -190,6 +233,8 @@ def signin(request):
             return redirect('libros_view')
              
 
+
+@login_required
 def agregrar_libros(request):
     if request.method == 'GET':
         return render (request, 'agregar_libros.html',{
@@ -206,3 +251,29 @@ def agregrar_libros(request):
             'form': AgregarLibro,
             'error': 'Proporcionar datos válido'
         })
+
+
+def registro_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')  # 🔹 Obtiene el username del formulario (no 'name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Validación: Verifica si el usuario ya existe
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Ya existe un usuario con ese nombre.")
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, "Ya existe un usuario con ese correo.")
+        else:
+            # Crea el usuario (username es obligatorio)
+            user = User.objects.create_user(
+                username=username,  # 🔹 Usa el username del formulario
+                email=email,
+                password=password,
+                first_name='',  # Opcional (para evitar el error NOT NULL)
+                last_name='',    # Opcional
+            )
+            login(request, user)  # Inicia sesión automáticamente
+            return redirect('libros_view')  # Redirige al dashboard
+
+    return render(request, 'registro.html')
