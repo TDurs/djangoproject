@@ -14,6 +14,8 @@ from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.http import require_GET
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 
@@ -30,10 +32,31 @@ def libros_view(request):
 
     if request.user.is_authenticated:
         favoritos = LibroFavorito.objects.filter(usuario=request.user).values_list('libro_id', flat=True)
-    return render(request, 'libros.html', {
+    return render(request, 'home.html', {
         'libros': libros,
         'favoritos': favoritos,
     })
+
+
+@require_GET
+def buscar_libros(request):
+    query = request.GET.get('q', '')
+    libros = AlmacenLibros.objects.filter(titulo__icontains=query)[:20]
+    resultados = []
+    
+    for libro in libros:
+        resultados.append({
+            'titulo': libro.titulo,
+            'autor': libro.autor,
+            'imagen': libro.imagen.url if libro.imagen else '',
+            'critica_de_internet': libro.critica_de_internet,
+            'descripcion': libro.descripcion,
+            'año': libro.año,
+            'genero': str(libro.genero),
+            'clasificacion': str(libro.clasificacion)
+        })
+    
+    return JsonResponse(resultados, safe=False)
 
 @login_required
 def agregar_favorito(request, libro_id):
@@ -300,4 +323,27 @@ def subir_imagen_libro(request, libro_id):
     return JsonResponse({
         'success': True,
         'imagen_url': libro.imagen.url
+    })
+
+
+@require_POST
+@staff_member_required
+def upload_book_image(request, libro_id):
+    libro = get_object_or_404(AlmacenLibros, id=libro_id)
+    
+    if 'imagen' not in request.FILES:
+        return JsonResponse({'success': False, 'error': 'No se proporcionó imagen'})
+    
+    imagen = request.FILES['imagen']
+    
+    # Validar tamaño y tipo de imagen si lo deseas
+    if imagen.size > 5*1024*1024:  # 5MB máximo
+        return JsonResponse({'success': False, 'error': 'La imagen es demasiado grande (máx. 5MB)'})
+    
+    libro.imagen = imagen
+    libro.save()
+    
+    return JsonResponse({
+        'success': True,
+        'image_url': libro.imagen.url
     })
