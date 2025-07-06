@@ -1,7 +1,8 @@
 
 from django.urls import path
 from . import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -17,6 +18,9 @@ urlpatterns = [
     path('registro/', views.registro_view, name='registro'),
     path('libros/favorito/toggle/', views.toggle_favorito, name='toggle_favorito'),
     path('favoritos/', views.libros_favoritos, name='libros_favoritos'),
+    path('libros/<int:libro_id>/subir-imagen/', views.subir_imagen_libro, name='subir_imagen_libro'),
+    
+
    
 
 
@@ -24,4 +28,4 @@ urlpatterns = [
 
     #path('book/<int:id>', views.book),
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

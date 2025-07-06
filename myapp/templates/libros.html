@@ -28,24 +28,94 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease;
+        display: flex;
     }
 
     .cuadros li:hover {
         transform: scale(1.02);
     }
 
-    .boton-favorito {
-        background-color: gold;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
+    .libro-contenido {
+        flex: 1;
+        color: #000; /* Texto en color negro */
     }
 
-    .boton-favorito.ya-favorito {
-        background-color: gray;
-        color: white;
+    .libro-imagen-container {
+        position: relative;
+        width: 150px;
+        margin-left: 20px;
+    }
+
+    .libro-imagen {
+        width: 150px;
+        height: 200px;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .sin-imagen {
+        width: 100%;
+        height: 100%;
+        background-color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #757575;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .sin-imagen:hover {
+        background-color: #d0d0d0;
+    }
+
+    .sin-imagen .upload-icon {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .sin-imagen .upload-text {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .libro-imagen img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .favorito-icono {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        color: rgba(128, 128, 128, 0.5);
+        transition: all 0.2s ease;
+        z-index: 2;
+    }
+
+    .favorito-icono.activo {
+        color: gold;
+        text-shadow: 0 0 3px rgba(0,0,0,0.3);
+    }
+
+    .upload-form {
+        display: none;
+    }
+
+    .uploading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .favorito-icono:hover {
+        transform: scale(1.1);
     }
 
     .botones-superiores button {
@@ -56,7 +126,12 @@
         font-size: 16px;
         cursor: pointer;
     }
+
+
+    
 </style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <div class="botones-superiores">
     <a href="{% url 'agregrar_libros' %}">
@@ -72,76 +147,137 @@
 <ul id="lista-libros" class="cuadros">
     {% for libro in libros %}
     <li>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                {% if libro.id %}
-                    <a href="{% url 'resena_detallada' libro.id %}"><h2>{{ libro.titulo }}</h2></a>
-                {% else %}
-                    <h2>Reseña no disponible</h2>
-                {% endif %}
-                <p><strong>Autor:</strong> {{ libro.autor }}</p>
-                <p><strong>Año:</strong> {{ libro.año }}</p>
-                <p><strong>Crítica:</strong> {{ libro.critica_de_internet }}</p>
-                <p><strong>Género:</strong> {{ libro.genero }}</p>
-                <p><strong>Clasificación:</strong> {{ libro.clasificacion }}</p>
-            </div>
-            <div>
-                <button class="favorito-btn boton-favorito {% if libro.id in favoritos %}ya-favorito{% endif %}"
-                        data-libro-id="{{ libro.id }}">
-                    {% if libro.id in favoritos %}★ Ya favorito{% else %}★ Favorito{% endif %}
-                </button>
-            </div>
+        <div class="libro-contenido">
+            {% if libro.id %}
+                <a href="{% url 'resena_detallada' libro.id %}"><h2>{{ libro.titulo }}</h2></a>
+            {% else %}
+                <h2>Reseña no disponible</h2>
+            {% endif %}
+            <p><strong>Autor:</strong> {{ libro.autor }}</p>
+            <p><strong>Año:</strong> {{ libro.año }}</p>
+            <p><strong>Crítica:</strong> {{ libro.critica_de_internet }}</p>
+            <p><strong>Género:</strong> {{ libro.genero }}</p>
+            <p><strong>Clasificación:</strong> {{ libro.clasificacion }}</p>
+        </div>
+        
+        <div class="libro-imagen-container" id="container-{{ libro.id }}">
+            {% if libro.imagen %}
+                <div class="libro-imagen">
+                    <img src="{{ libro.imagen.url }}" alt="{{ libro.titulo }}">
+                    <i class="fas fa-bookmark favorito-icono {% if libro.id in favoritos %}activo{% endif %}" 
+                       data-libro-id="{{ libro.id }}"></i>
+                </div>
+            {% else %}
+                <div class="libro-imagen">
+                    {% if request.user.is_staff %}
+                    <div class="sin-imagen" id="upload-trigger-{{ libro.id }}">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div class="upload-text">Subir imagen</div>
+                    </div>
+                    <form id="upload-form-{{ libro.id }}" class="upload-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input id="file-input-{{ libro.id }}" type="file" name="imagen" accept="image/*" style="display:none;">
+                    </form>
+                    {% else %}
+                    <div class="sin-imagen">
+                        Sin Imagen
+                    </div>
+                    {% endif %}
+                    <i class="fas fa-bookmark favorito-icono {% if libro.id in favoritos %}activo{% endif %}" 
+                       data-libro-id="{{ libro.id }}"></i>
+                </div>
+            {% endif %}
         </div>
     </li>
     {% endfor %}
 </ul>
 
 <script>
-    function filtrarLibros() {
-        const filtro = document.getElementById('buscador').value.toLowerCase();
-        const libros = document.querySelectorAll('#lista-libros li');
-
-        libros.forEach(libro => {
-            const texto = libro.textContent.toLowerCase();
-            libro.style.display = texto.includes(filtro) ? '' : 'none';
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const buttons = document.querySelectorAll('.favorito-btn');
-
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
+    // Función para favoritos (se mantiene igual)
+    document.addEventListener('DOMContentLoaded', function() {
+        const iconos = document.querySelectorAll('.favorito-icono');
+        iconos.forEach(icono => {
+            icono.addEventListener('click', function(e) {
+                e.preventDefault();
                 const libroId = this.dataset.libroId;
                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                const boton = this;
-
+                
                 fetch("{% url 'toggle_favorito' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': csrfToken,
+                        'X-CSRFToken': csrfToken
                     },
                     body: `libro_id=${libroId}`
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        if (data.favorito) {
-                            boton.textContent = '★ Ya favorito';
-                            boton.classList.add('ya-favorito');
-                        } else {
-                            boton.textContent = '★ Favorito';
-                            boton.classList.remove('ya-favorito');
-                        }
+                    if(data.success) {
+                        this.classList.toggle('activo', data.favorito);
                     } else {
-                        alert('Error al marcar favorito');
+                        alert('Error al actualizar favoritos');
                     }
                 })
                 .catch(error => console.error('Error:', error));
             });
         });
+
+        // Nueva función para subida de imágenes con AJAX
+        {% if request.user.is_staff %}
+        document.querySelectorAll('.sin-imagen[id^="upload-trigger-"]').forEach(trigger => {
+            const libroId = trigger.id.split('-')[2];
+            const fileInput = document.getElementById(`file-input-${libroId}`);
+            const container = document.getElementById(`container-${libroId}`);
+
+            trigger.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('imagen', this.files[0]);
+                    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                    
+                    container.classList.add('uploading');
+                    trigger.innerHTML = '<i class="fas fa-spinner fa-spin"></i><div>Subiendo...</div>';
+
+                    fetch(`/libros/${libroId}/subir-imagen/`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Actualiza la imagen sin recargar
+                            container.innerHTML = `
+                                <div class="libro-imagen">
+                                    <img src="${data.imagen_url}" alt="Imagen subida">
+                                    <i class="fas fa-bookmark favorito-icono" data-libro-id="${libroId}"></i>
+                                </div>
+                            `;
+                        } else {
+                            alert(data.error || 'Error al subir imagen');
+                            container.classList.remove('uploading');
+                            trigger.innerHTML = `
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <div class="upload-text">Subir imagen</div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error en la conexión');
+                        container.classList.remove('uploading');
+                        trigger.innerHTML = `
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <div class="upload-text">Subir imagen</div>
+                        `;
+                    });
+                }
+            });
+        });
+        {% endif %}
     });
 </script>
+
 
 {% endblock %}

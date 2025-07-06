@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 
 
 
@@ -52,8 +53,18 @@ class AlmacenLibros(models.Model):
     genero = models.ForeignKey(Generolibros, on_delete=models.CASCADE)
     año = models.CharField(max_length=200)
     clasificacion = models.ForeignKey(ClasificacionLibros, on_delete=models.CASCADE)
-    critica_de_internet = models.CharField(max_length=200)
+    critica_de_internet = models.PositiveSmallIntegerField(
+        choices=[(i, str(i)) for i in range(1, 6)],
+        help_text="Calificación del 1 al 5"
+    )
     created = models.DateTimeField(auto_now_add=True)
+    descripcion = models.CharField(max_length=200)
+    imagen = models.ImageField(
+        upload_to='libros/',
+        null=True,
+        blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])]
+    )
 
     def __str__(self):
         return self.titulo + ' - ' + self.autor
@@ -98,6 +109,7 @@ class LibroFavorito(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} - {self.libro.titulo}"
+    
 
 
 

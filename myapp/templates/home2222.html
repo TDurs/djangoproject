@@ -558,19 +558,17 @@
             </label>
             <nav class="navbar">
                 <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Login</a></li>
-                    <li><a href="#">Nosotros</a></li>
-                    <li><a href="#">Libros</a></li>
-                    <li><a href="#">Contacto</a></li>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/libros">Libros</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="right"><a href="/logout">Logout</a></li>
+                    {% else %}
+                        <li class="right"><a href="/registro">Iniciar Seción</a></li>
+                    
+                    {% endif %}
                 </ul>
             </nav>
-            <div class="icons">
-                <i class="fa-brands fa-facebook"></i>
-                <i class="fa-brands fa-twitter"></i>
-                <i class="fa-brands fa-instagram"></i>
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
+            
         </div>
 
         <div class="header-content container">

@@ -13,6 +13,9 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import user_passes_test
+
+
 
 
 
@@ -277,3 +280,20 @@ def registro_view(request):
             return redirect('libros_view')  # Redirige al dashboard
 
     return render(request, 'registro.html')
+
+
+@require_POST
+@user_passes_test(lambda u: u.is_staff)
+def subir_imagen_libro(request, libro_id):
+    libro = get_object_or_404(AlmacenLibros, id=libro_id)
+    
+    if 'imagen' not in request.FILES:
+        return JsonResponse({'success': False, 'error': 'No se proporcionó imagen'}, status=400)
+    
+    libro.imagen = request.FILES['imagen']
+    libro.save()
+    
+    return JsonResponse({
+        'success': True,
+        'imagen_url': libro.imagen.url
+    })
