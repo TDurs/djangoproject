@@ -121,12 +121,7 @@ def resena_detallada(request, reseñalibro_estado_lectura_id):
 def create_creacion(request, libro_id):
     libro = get_object_or_404(AlmacenLibros, pk=libro_id)
 
-    if request.method == "GET":
-        return render(request, 'create_creacion.html', {
-            'form': CreateNewTask(),
-            'libro': libro,
-        })
-    else:
+    if request.method == "POST":
         form = CreateNewTask(request.POST)
         if form.is_valid():
             ReseñaLibro.objects.create(
@@ -135,12 +130,20 @@ def create_creacion(request, libro_id):
                 texto_reseña=form.cleaned_data['texto_reseña'],
                 calificacion=int(form.cleaned_data['calificacion']),
             )
-            return redirect(f'/libros/{libro.id}/')  # Vuelve a la vista de reseñas
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
+            return redirect(f'/libros/{libro.id}/')
         else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'errors': form.errors}, status=400)
             return render(request, 'create_creacion.html', {
                 'form': form,
                 'libro': libro,
             })
+    
+    # GET request (no debería ocurrir con el modal)
+    return redirect(f'/libros/{libro.id}/')
         
 
 @login_required
@@ -156,18 +159,16 @@ def editar_reseña(request, reseña_id):
             reseña.texto_reseña = form.cleaned_data['texto_reseña']
             reseña.calificacion = int(form.cleaned_data['calificacion'])
             reseña.save()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
             return redirect('resena_detallada', reseña.estado_lectura.id)
-    else:
-        form = CreateNewTask(initial={
-            'texto_reseña': reseña.texto_reseña,
-            'calificacion': reseña.calificacion,
-        })
-
-    return render(request, 'editar_reseña.html', {
-        'form': form,
-        'reseña': reseña
-    })
-
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'errors': form.errors}, status=400)
+    
+    # Para GET requests (no debería ocurrir con el modal)
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
 
         
 @login_required
@@ -182,14 +183,17 @@ def eliminar_reseña(request, reseña_id):
     return redirect('resena_detallada', libro_id)
 
         
-
+@login_required
 def home(request):
     return render(request, 'home.html')
+
+def index(request):
+    return render(request, 'index.html')
 
 def signup(request):
 
     if request.method == 'GET':
-        return render(request, 'signup.html',{
+        return render(request, 'registro.html',{
         'form': UserCreationForm
     })
     else:
@@ -201,9 +205,9 @@ def signup(request):
                 login(request,user)
 
                     #return HttpResponse('User creado satisfacoriamente')
-                return redirect('libros_view')
+                return redirect('home')
             except IntegrityError:
-                return render(request,'signup.html',{
+                return render(request,'registro.html',{
                     'form': UserCreationForm,
                     "error":'Username ya existe'
                 }) 
@@ -215,11 +219,11 @@ def signup(request):
     
 def signout(request):
     logout(request)
-    return redirect('home')
+    return redirect('index')
 
 def signin(request):
     if request.method == 'GET':
-        return render(request, 'signin.html',{
+        return render(request, 'registro.html',{
             'form': AuthenticationForm
         })
     else:
@@ -227,13 +231,13 @@ def signin(request):
             request, username=request.POST['username'], password=request.POST
             ['password'])
         if user is None:
-            return render(request,'signin.html',{
+            return render(request,'registro.html',{
                 'form':AuthenticationForm,
                 'error':'Username or password esta incorrecto'
             })
         else:
             login(request,user)
-            return redirect('libros_view')
+            return redirect('home')
              
 
 
@@ -277,7 +281,7 @@ def registro_view(request):
                 last_name='',    # Opcional
             )
             login(request, user)  # Inicia sesión automáticamente
-            return redirect('libros_view')  # Redirige al dashboard
+            return redirect('home')  # Redirige al dashboard
 
     return render(request, 'registro.html')
 
