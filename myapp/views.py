@@ -246,31 +246,27 @@ def index(request):
     return render(request, 'index.html')
 
 def signup(request):
-
     if request.method == 'GET':
-        return render(request, 'registro.html',{
-        'form': UserCreationForm
-    })
+        return render(request, 'registro.html', {'form': UserCreationForm})
     else:
         if request.POST['password1'] == request.POST['password2']:
-            #register user
             try:
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
+                user = User.objects.create_user(
+                    username=request.POST['username'],
+                    password=request.POST['password1']
+                )
                 user.save()
-                login(request,user)
-
-                    #return HttpResponse('User creado satisfacoriamente')
-                return redirect('libros_view')
+                login(request, user)
+                return redirect('libros_view')  # ← Nombre debe coincidir con urls.py
             except IntegrityError:
-                return render(request,'registro.html',{
+                return render(request, 'registro.html', {
                     'form': UserCreationForm,
-                    "error":'Username ya existe'
-                }) 
-                
-        return render(request,'signup.html',{
-                    'form': UserCreationForm,
-                    "error":'Password no coinciden'
-                }) 
+                    'error': 'El usuario ya existe'
+                })
+        return render(request, 'registro.html', {
+            'form': UserCreationForm,
+            'error': 'Las contraseñas no coinciden'
+        })
     
 def signout(request):
     logout(request)
@@ -350,7 +346,7 @@ def registro_view(request):
                 last_name='',    # Opcional
             )
             login(request, user)  # Inicia sesión automáticamente
-            return redirect('home')  # Redirige al dashboard
+            return redirect('libros_view')  # Redirige al dashboard
 
     return render(request, 'registro.html')
 

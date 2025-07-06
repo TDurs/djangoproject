@@ -1091,6 +1091,33 @@
     .hidden {
     display: none;
 }
+
+
+.custom-select {
+    background-color: #333;  /* Fondo oscuro */
+    color: white;           /* Texto blanco */
+    padding: 8px 12px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    width: 100%;
+    transition: all 0.3s ease; /* Suaviza la transición */
+}
+
+/* Estilo cuando el select está enfocado (seleccionado) */
+.custom-select:focus {
+    background-color: rgba(51, 51, 51, 0.7);  /* Gris oscuro con 70% de opacidad */
+    outline: none;
+    border-color: #777;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Estilo para las opciones del dropdown */
+.custom-select option {
+    background-color: #333;  /* Fondo oscuro para las opciones */
+    color: white;
+}
+
+
   </style>
 </head>
 <body>
