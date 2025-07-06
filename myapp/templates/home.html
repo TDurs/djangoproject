@@ -1199,7 +1199,7 @@
             </div>
             
             <!-- List View (hidden by default) -->
-            <ul id="list-view" class="cuadros" style="display:none;">
+            <ul id="list-view" class="cuadros list-view-hidden">
                 {% for libro in libros %}
                 <li>
                     <div class="libro-contenido">
@@ -1361,64 +1361,109 @@
     <!-- Registro de libros -->
     <section id="register">
         <div class="container">
+            <!-- Mensajes de retroalimentación -->
+            {% if messages %}
+            <div class="alert-messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                    <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <div class="section-title">
-                <h2>Registra Tus Libros</h2>
-                <p>Guarda tus lecturas, escribe reseñas y lleva un seguimiento de tu progreso literario.</p>
+                <h2>Agregar Nuevos Libros</h2>
+                <p>Completa el formulario para añadir libros a tu colección.</p>
             </div>
             
             <div class="register-section">
                 <div class="form-container">
                     <div class="form-img">
-                        <img src="https://images.unsplash.com/photo-1495640388908-05fa85288e61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Registra tus libros">
+                        <img src="https://images.unsplash.com/photo-1495640388908-05fa85288e61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
+                            alt="Agregar libros" loading="lazy">
                     </div>
                     <div class="form-content">
-                        <h3 class="form-title">Añade un Nuevo Libro</h3>
-                        <p class="form-desc">Completa los detalles de tu lectura para guardarla en tu biblioteca personal y compartir tu experiencia con otros lectores.</p>
-                        
-                        <form>
+                        <form method="post" action="#register">
+                            {% csrf_token %}
+                            
+                            <!-- Campo Título -->
                             <div class="form-group">
-                                <label for="book-title">Título del Libro</label>
-                                <input type="text" id="book-title" placeholder="Ej: Cien años de soledad">
+                                <label for="id_titulo">Título del Libro *</label>
+                                <input type="text" id="id_titulo" name="titulo" 
+                                    placeholder="Ej: Cien años de soledad" required
+                                    maxlength="200">
                             </div>
                             
+                            <!-- Campo Autor -->
                             <div class="form-group">
-                                <label for="book-author">Autor</label>
-                                <input type="text" id="book-author" placeholder="Ej: Gabriel García Márquez">
+                                <label for="id_autor">Autor *</label>
+                                <input type="text" id="id_autor" name="autor" 
+                                    placeholder="Ej: Gabriel García Márquez" required
+                                    maxlength="200">
                             </div>
                             
+                            <!-- Campo Género -->
                             <div class="form-group">
-                                <label for="book-genre">Género</label>
-                                <select id="book-genre">
-                                    <option value="">Selecciona un género</option>
-                                    <option value="fantasy">Fantasía</option>
-                                    <option value="scifi">Ciencia Ficción</option>
-                                    <option value="romance">Romance</option>
-                                    <option value="mystery">Misterio</option>
-                                    <option value="horror">Terror</option>
-                                    <option value="historical">Histórica</option>
+                                <label for="id_genero">Género</label>
+                                <select id="id_genero" name="genero" required>
+                                    {% for genero in generos %}
+                                        <option value="{{ genero.id }}" 
+                                                {% if genero.id == genero_predeterminado.id %}selected{% endif %}>
+                                            {{ genero.nombre }}
+                                        </option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             
+                            <!-- Campo Año -->
                             <div class="form-group">
-                                <label>Calificación</label>
+                                <label for="id_año">Año de publicación *</label>
+                                <input type="text" id="id_año" name="año" 
+                                    placeholder="Ej: 1967" required
+                                    maxlength="200">
+                            </div>
+                            
+                            <!-- Campo Clasificación -->
+                            <div class="form-group">
+                                <label for="id_clasificacion">Clasificación</label>
+                                <select id="id_clasificacion" name="clasificacion" required>
+                                    {% for clasificacion in clasificaciones %}
+                                        <option value="{{ clasificacion.id }}" 
+                                                {% if clasificacion.id == clasificacion_predeterminada.id %}selected{% endif %}>
+                                            {{ clasificacion.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Campo Calificación -->
+                            <div class="form-group">
+                                <label>Calificación (1-5)</label>
                                 <div class="rating-input">
                                     <div class="rating-stars">
-                                        <i class="far fa-star" data-rating="1"></i>
-                                        <i class="far fa-star" data-rating="2"></i>
-                                        <i class="far fa-star" data-rating="3"></i>
-                                        <i class="far fa-star" data-rating="4"></i>
-                                        <i class="far fa-star" data-rating="5"></i>
+                                        {% for i in "12345" %}
+                                            <i class="{% if forloop.counter <= 3 %}fas{% else %}far{% endif %} fa-star" 
+                                            data-rating="{{ forloop.counter }}"></i>
+                                        {% endfor %}
+                                        <input type="hidden" id="id_critica_de_internet" name="critica_de_internet" value="3" required>
                                     </div>
-                                    <span id="rating-value">0/5</span>
+                                    <span id="rating-value">3/5</span>
                                 </div>
                             </div>
                             
+                            <!-- Campo Descripción -->
                             <div class="form-group">
-                                <label for="book-review">Reseña</label>
-                                <textarea id="book-review" placeholder="Comparte tus impresiones sobre este libro..."></textarea>
+                                <label for="id_descripcion">Reseña/Descripción *</label>
+                                <textarea id="id_descripcion" name="descripcion" 
+                                        placeholder="Comparte tus impresiones sobre este libro..."
+                                        maxlength="200" required></textarea>
                             </div>
                             
-                            <button type="submit" class="btn-submit">Guardar Lectura</button>
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-plus-circle"></i> Agregar Libro
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -1723,6 +1768,40 @@
         });
         {% endif %}
     });
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Establecer calificación predeterminada (3 estrellas)
+    const defaultRating = 3;
+    const ratingInput = document.getElementById('id_critica_de_internet');
+    const ratingValue = document.getElementById('rating-value');
+    
+    ratingInput.value = defaultRating;
+    ratingValue.textContent = `${defaultRating}/5`;
+    
+    // Resaltar estrellas predeterminadas
+    document.querySelectorAll('.rating-stars .fa-star').forEach((star, index) => {
+        if (index < defaultRating) {
+            star.classList.add('fas');
+            star.classList.remove('far');
+        }
+    });
+    
+    // Manejar clic en estrellas
+    document.querySelectorAll('.rating-stars .fa-star').forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            ratingInput.value = rating;
+            ratingValue.textContent = `${rating}/5`;
+            
+            document.querySelectorAll('.rating-stars .fa-star').forEach((s, i) => {
+                s.classList.toggle('fas', i < rating);
+                s.classList.toggle('far', i >= rating);
+            });
+        });
+    });
+});
 </script>
 </body>
 </html>

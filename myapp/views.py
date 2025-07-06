@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from .models import Project, Task, ReseñaLibro, EstadoDeLectura, AlmacenLibros, LibroFavorito
+from .models import Project, Task, ReseñaLibro, EstadoDeLectura, AlmacenLibros, LibroFavorito,Generolibros, ClasificacionLibros
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from .forms import CreateNewTask, AgregarLibro
@@ -27,15 +27,47 @@ from django.contrib.admin.views.decorators import staff_member_required
 # Create your views here.
 @login_required
 def libros_view(request):
-    libros = AlmacenLibros.objects.all()
-    favoritos = []
+    # Obtener todos los libros existentes
+    libros = AlmacenLibros.objects.all().order_by('-id')  # Ordenados por ID descendente (los más nuevos primero)
 
-    if request.user.is_authenticated:
-        favoritos = LibroFavorito.objects.filter(usuario=request.user).values_list('libro_id', flat=True)
-    return render(request, 'home.html', {
-        'libros': libros,
-        'favoritos': favoritos,
-    })
+    # Obtener géneros y clasificaciones (para el formulario)
+    generos = Generolibros.objects.all()
+    clasificaciones = ClasificacionLibros.objects.all()
+
+    # Valores predeterminados para el formulario
+    genero_predeterminado = generos.first()
+    clasificacion_predeterminada = clasificaciones.first()
+
+    if request.method == 'POST':
+        try:
+            # Código para guardar el nuevo libro (como ya lo tienes)
+            libro = AlmacenLibros(
+                titulo=request.POST.get('titulo'),
+                autor=request.POST.get('autor'),
+                genero_id=request.POST.get('genero', genero_predeterminado.id),
+                año=request.POST.get('año'),
+                clasificacion_id=request.POST.get('clasificacion', clasificacion_predeterminada.id),
+                critica_de_internet=request.POST.get('critica_de_internet', 3),
+                descripcion=request.POST.get('descripcion')
+            )
+            libro.save()
+            messages.success(request, '¡Libro agregado con éxito!')
+            return redirect('libros_view')  # Recarga la página para mostrar el nuevo libro
+        except Exception as e:
+            messages.error(request, f'Error: {str(e)}')
+
+    # Enviar todo al template
+    context = {
+        'libros': libros,  # <- Asegúrate de incluir esto
+        'generos': generos,
+        'clasificaciones': clasificaciones,
+        'genero_predeterminado': genero_predeterminado,
+        'clasificacion_predeterminada': clasificacion_predeterminada
+    }
+    return render(request, 'home.html', context)
+
+
+
 
 
 @require_GET
@@ -228,7 +260,7 @@ def signup(request):
                 login(request,user)
 
                     #return HttpResponse('User creado satisfacoriamente')
-                return redirect('home')
+                return redirect('libros_view')
             except IntegrityError:
                 return render(request,'registro.html',{
                     'form': UserCreationForm,
@@ -260,27 +292,41 @@ def signin(request):
             })
         else:
             login(request,user)
-            return redirect('home')
+            return redirect('libros_view')
              
 
 
 @login_required
-def agregrar_libros(request):
-    if request.method == 'GET':
-        return render (request, 'agregar_libros.html',{
-            'form': AgregarLibro
-        })
-    else:
+def agregar_libros(request):
+    genero_predeterminado = Generolibros.objects.get(id=1)  # Obtener el género predeterminado
+    clasificacion_predeterminada = ClasificacionLibros.objects.get(id=1)  # Obtener clasificación predeterminada
+
+    if request.method == 'POST':
         try:
-            form=AgregarLibro(request.POST)
-            agregar=form.save(commit=False)
-            agregar.save()
-            return redirect('libros_view')
-        except ValueError:
-            return render (request, 'agregar_libros.html',{
-            'form': AgregarLibro,
-            'error': 'Proporcionar datos válido'
-        })
+            libro = AlmacenLibros(
+                titulo=request.POST.get('titulo'),
+                autor=request.POST.get('autor'),
+                genero_id=request.POST.get('genero', genero_predeterminado.id),  # Valor predeterminado
+                año=request.POST.get('año'),
+                clasificacion_id=request.POST.get('clasificacion', clasificacion_predeterminada.id),  # Valor predeterminado
+                critica_de_internet=request.POST.get('critica_de_internet', 3),  # Valor predeterminado 3
+                descripcion=request.POST.get('descripcion')
+            )
+            libro.save()
+            messages.success(request, '¡Libro agregado con éxito!')
+            return redirect('#register')
+        except Exception as e:
+            messages.error(request, f'Error: {str(e)}')
+
+    generos = Generolibros.objects.all()
+    clasificaciones = ClasificacionLibros.objects.all()
+    
+    return render(request, 'home.html', {
+    'generos': generos,
+    'clasificaciones': clasificaciones,
+    'genero_predeterminado': genero_predeterminado,  # Pasa el objeto completo
+    'clasificacion_predeterminada': clasificacion_predeterminada  # Pasa el objeto completo
+    })
 
 
 def registro_view(request):
